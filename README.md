@@ -4,9 +4,13 @@ Hybrid RAG Lab is an experimental repository exploring how to design
 **production-grade Retrieval Augmented Generation (RAG) systems**.
 
 Modern AI applications are no longer just about calling a language
-model. Reliable systems require careful engineering across retrieval,
-orchestration, evaluation, and observability. This project focuses on
-understanding and implementing those components step by step.
+model. Reliable systems require careful engineering across : 
+- Retrieval
+- Orchestration 
+- Evaluation
+- Observability
+
+This project focuses on understanding and implementing those components step by step.
 
 The core package developed in this repository is **`ragforge`**, a
 Python library for building evaluation-driven hybrid RAG pipelines.
@@ -21,22 +25,24 @@ applications.
 
 Most tutorials demonstrate basic RAG pipelines:
 
--   embed documents
--   retrieve similar chunks
--   pass them to an LLM
+-   Embed documents
+-   Retrieve similar chunks
+-   Pass them to an LLM
 
 While useful for prototyping, these pipelines often fail in real systems
 due to:
 
--   weak retrieval recall
--   poor ranking of relevant documents
--   hallucinated responses
--   lack of evaluation and monitoring
--   difficulty reproducing results
+-   Weak retrieval recall
+-   Poor ranking of relevant documents
+-   Hallucinated responses
+-   Lack of evaluation and monitoring
+-   Difficulty reproducing results
 
-Modern AI systems require a more robust architecture that combines
-multiple retrieval strategies, structured pipelines, and evaluation
-mechanisms.
+Modern AI systems require a more robust architecture that combines :
+
+- Multiple retrieval strategies
+- Structured pipelines 
+- Evaluation mechanisms
 
 This repository explores those ideas through practical implementations.
 
@@ -282,38 +288,17 @@ Planned milestones include:
 
 ------------------------------------------------------------------------
 
-# Learning Path / Build Order
+# Current Build Plan
 
-This repo is meant to be built step by step so that readers can learn
-the architecture while implementing it.
+This repo is being built incrementally so readers can follow the system
+architecture while implementing it.
 
-The planned build order is:
+The current plan is:
 
-1.  **Core domain models**
-    Define the shared data structures and abstractions used throughout
-    the system.
+1.  **Core abstractions and data models**
 2.  **Ingestion and chunking**
-    Load documents, split them into chunks, and preserve useful
-    metadata.
-3.  **Sparse retrieval**
-    Implement a baseline BM25 retriever.
-4.  **Dense retrieval**
-    Add embedding-based retrieval with a vector index.
-5.  **Hybrid retrieval and rank fusion**
-    Combine sparse and dense retrieval results into a stronger retrieval
-    pipeline.
-6.  **Generation**
-    Build context construction and answer generation on top of retrieval
-    outputs.
-7.  **Evaluation**
-    Measure system quality using retrieval metrics and LLM-as-judge
-    style evaluation.
-8.  **API layer**
-    Expose the system through a clean service interface.
-
-This ordering is intentional: each stage builds on the previous one and
-keeps the project grounded in measurable improvements instead of jumping
-straight to a full end-to-end demo.
+3.  **Retrieval: BM25, dense search, then hybrid fusion**
+4.  **Generation, evaluation, and API integration**
 
 ------------------------------------------------------------------------
 
