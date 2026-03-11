@@ -1,0 +1,36 @@
+[project]
+name = "ragforge"
+version = "0.1.0"
+description = "Evaluation-driven hybrid RAG system built for learning AI systems engineering."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=1.26.0",
+    "pydantic>=2.7.0",
+    "rank-bm25>=0.2.2",
+    "sentence-transformers>=3.0.0",
+    "faiss-cpu>=1.8.0",
+    "fastapi>=0.115.0",
+    "uvicorn>=0.30.0",
+    "python-dotenv>=1.0.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "ruff>=0.6.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
