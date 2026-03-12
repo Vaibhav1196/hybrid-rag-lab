@@ -1,3 +1,4 @@
+# python -m app.ingestion.test_ingestion
 from __future__ import annotations
 
 from ragforge.ingestion.loader import load_text_documents
