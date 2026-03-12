@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Dict
+from typing import Any, Dict
 
 # @dataclass Automatically generates init/representation methods
 # Slots here reduces memory and speeds up attribute access
@@ -10,7 +10,7 @@ from typing import Dict
 class Document:
     doc_id: str
     text: str
-    metadata: Dict[str, str]
+    metadata: Dict[str, Any]
 
 
 @dataclass(slots=True)
@@ -18,5 +18,5 @@ class Chunk:
     chunk_id: str
     doc_id: str
     text: str
-    metadata: Dict[str, str]
+    metadata: Dict[str, Any]
 
