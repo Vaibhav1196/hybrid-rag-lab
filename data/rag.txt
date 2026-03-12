@@ -1,0 +1,1 @@
+Retrieval-Augmented Generation, or RAG, is a pattern where a language model is provided with external retrieved context before generating an answer. This reduces hallucinations and allows systems to ground their responses in source documents.

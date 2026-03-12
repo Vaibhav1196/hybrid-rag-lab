@@ -1,0 +1,1 @@
+LangGraph is a framework for building stateful, multi-step applications with language models. It is useful for orchestrating agent-like workflows where the system transitions between nodes in a graph. LangGraph helps developers control execution flow, memory, and tool usage more explicitly than simple chains.

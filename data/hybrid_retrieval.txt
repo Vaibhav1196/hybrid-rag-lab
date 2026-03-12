@@ -1,0 +1,1 @@
+Hybrid retrieval combines sparse retrieval, such as BM25, with dense vector retrieval based on embeddings. Sparse retrieval is good at exact keyword matching, while dense retrieval captures semantic similarity. Combining both often improves recall.
