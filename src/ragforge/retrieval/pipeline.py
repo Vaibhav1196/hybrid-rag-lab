@@ -10,6 +10,7 @@ from ragforge.retrieval.bm25 import BM25Retriever
 from ragforge.retrieval.dense import DenseRetriever
 from ragforge.retrieval.embeddings import SentenceTransformerEmbedder, TextEmbedder
 from ragforge.retrieval.fusion import reciprocal_rank_fusion
+from ragforge.retrieval.reranking import CrossEncoderScorer, QueryDocumentScorer, RetrievalReranker
 
 
 def _build_chunks(
@@ -195,3 +196,88 @@ class HybridPipeline:
             top_k=top_k,
             k=self.rrf_k,
         )
+
+
+@dataclass(slots=True)
+class RerankedHybridPipeline:
+    """Hybrid retrieval pipeline with a reranking stage over the fused shortlist."""
+
+    documents: list[Document]
+    chunks: list[Chunk]
+    hybrid_pipeline: HybridPipeline
+    reranker: RetrievalReranker
+    candidate_top_k: int = 10
+
+    @classmethod
+    def from_documents(
+        cls,
+        documents: list[Document],
+        embedder: TextEmbedder | None = None,
+        scorer: QueryDocumentScorer | None = None,
+        chunk_size: int = 300,
+        overlap: int = 50,
+        model_name: str = "all-MiniLM-L6-v2",
+        rrf_k: int = 60,
+        reranker_model_name: str = "cross-encoder/ms-marco-MiniLM-L-6-v2",
+        candidate_top_k: int = 10,
+    ) -> RerankedHybridPipeline:
+        """Build a reranked hybrid pipeline from already-loaded documents."""
+        if candidate_top_k <= 0:
+            raise ValueError("candidate_top_k must be > 0.")
+
+        hybrid_pipeline = HybridPipeline.from_documents(
+            documents=documents,
+            embedder=embedder,
+            chunk_size=chunk_size,
+            overlap=overlap,
+            model_name=model_name,
+            rrf_k=rrf_k,
+        )
+        resolved_scorer = scorer or CrossEncoderScorer(model_name=reranker_model_name)
+
+        return cls(
+            documents=list(documents),
+            chunks=hybrid_pipeline.chunks,
+            hybrid_pipeline=hybrid_pipeline,
+            reranker=RetrievalReranker(resolved_scorer),
+            candidate_top_k=candidate_top_k,
+        )
+
+    @classmethod
+    def from_directory(
+        cls,
+        data_dir: str | Path,
+        embedder: TextEmbedder | None = None,
+        scorer: QueryDocumentScorer | None = None,
+        chunk_size: int = 300,
+        overlap: int = 50,
+        model_name: str = "all-MiniLM-L6-v2",
+        rrf_k: int = 60,
+        reranker_model_name: str = "cross-encoder/ms-marco-MiniLM-L-6-v2",
+        candidate_top_k: int = 10,
+    ) -> RerankedHybridPipeline:
+        """Load documents and build a reranked hybrid retrieval pipeline."""
+        documents = _load_documents(data_dir)
+
+        return cls.from_documents(
+            documents=documents,
+            embedder=embedder,
+            scorer=scorer,
+            chunk_size=chunk_size,
+            overlap=overlap,
+            model_name=model_name,
+            rrf_k=rrf_k,
+            reranker_model_name=reranker_model_name,
+            candidate_top_k=candidate_top_k,
+        )
+
+    def search(self, query: str, top_k: int = 5) -> list[RetrievalResult]:
+        """Retrieve with the hybrid pipeline, then rerank the fused shortlist."""
+        if top_k <= 0:
+            return []
+
+        candidates = self.hybrid_pipeline.search(
+            query=query,
+            top_k=max(top_k, self.candidate_top_k),
+        )
+        return self.reranker.rerank(query=query, results=candidates, top_k=top_k)
