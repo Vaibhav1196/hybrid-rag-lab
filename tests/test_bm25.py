@@ -2,13 +2,12 @@ from ragforge.core.schemas import Chunk
 from ragforge.retrieval.bm25 import BM25Retriever
 
 
-
 def make_chunk(chunk_id: str, text: str) -> Chunk:
     return Chunk(
         chunk_id=chunk_id,
         doc_id="doc-1",
         text=text,
-        metadata={}
+        metadata={},
     )
 
 
@@ -41,14 +40,27 @@ def test_bm25_respects_top_k() -> None:
 
 
 def test_bm25_returns_empty_for_blank_query() -> None:
+    retriever = BM25Retriever([make_chunk("c1", "some text here")])
+
+    assert retriever.search("   ", top_k=5) == []
+
+
+def test_bm25_returns_empty_for_non_positive_top_k() -> None:
+    retriever = BM25Retriever([make_chunk("c1", "some text here")])
+
+    assert retriever.search("text", top_k=0) == []
+    assert retriever.search("text", top_k=-1) == []
+
+
+def test_bm25_filters_out_zero_score_results() -> None:
     chunks = [
-        make_chunk("c1", "some text here"),
+        make_chunk("c1", "python backend systems"),
+        make_chunk("c2", "france paris capital"),
     ]
 
     retriever = BM25Retriever(chunks)
-    results = retriever.search("   ", top_k=5)
 
-    assert results == []
+    assert retriever.search("basketball", top_k=2) == []
 
 
 def test_bm25_raises_for_empty_chunk_list() -> None:

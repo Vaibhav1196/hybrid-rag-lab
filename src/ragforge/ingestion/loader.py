@@ -1,26 +1,23 @@
 from __future__ import annotations
-from genericpath import exists
 
 from pathlib import Path
-from typing import List
 
 from ragforge.core.schemas import Document
 
 
-def load_text_documents(data_dir: str | Path) -> List[Document]:
-    """
-    Load all .txt files from a directory into Document objects
-    """
+def load_text_documents(data_dir: str | Path) -> list[Document]:
+    """Load non-empty `.txt` files from a directory into `Document` objects."""
     data_path = Path(data_dir)
 
     if not data_path.exists():
         raise FileNotFoundError(f"Data directory does not exist: {data_path}")
+    if not data_path.is_dir():
+        raise NotADirectoryError(f"Expected a directory of text files: {data_path}")
 
-    documents: List[Document] = []
+    documents: list[Document] = []
 
     for file_path in sorted(data_path.glob("*.txt")):
         text = file_path.read_text(encoding="utf-8").strip()
-
         if not text:
             continue
 
@@ -31,9 +28,8 @@ def load_text_documents(data_dir: str | Path) -> List[Document]:
                 metadata={
                     "source": str(file_path),
                     "filename": file_path.name,
-                }
+                },
             )
         )
 
     return documents
-
