@@ -20,3 +20,10 @@ class Chunk:
     text: str
     metadata: Dict[str, Any]
 
+
+@dataclass(slots=True)
+class RetrievalResult:
+    chunk: Chunk
+    score: float
+    source: str
+
