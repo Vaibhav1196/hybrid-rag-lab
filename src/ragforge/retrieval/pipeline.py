@@ -9,6 +9,7 @@ from ragforge.ingestion.loader import load_text_documents
 from ragforge.retrieval.bm25 import BM25Retriever
 from ragforge.retrieval.dense import DenseRetriever
 from ragforge.retrieval.embeddings import SentenceTransformerEmbedder, TextEmbedder
+from ragforge.retrieval.fusion import reciprocal_rank_fusion
 
 
 def _build_chunks(
@@ -126,3 +127,71 @@ class DensePipeline:
     def search(self, query: str, top_k: int = 5) -> list[RetrievalResult]:
         """Run a query against the dense index."""
         return self.retriever.search(query=query, top_k=top_k)
+
+
+@dataclass(slots=True)
+class HybridPipeline:
+    """End-to-end hybrid retrieval pipeline using BM25, dense retrieval, and RRF."""
+
+    documents: list[Document]
+    chunks: list[Chunk]
+    sparse_retriever: BM25Retriever
+    dense_retriever: DenseRetriever
+    rrf_k: int = 60
+
+    @classmethod
+    def from_documents(
+        cls,
+        documents: list[Document],
+        embedder: TextEmbedder | None = None,
+        chunk_size: int = 300,
+        overlap: int = 50,
+        model_name: str = "all-MiniLM-L6-v2",
+        rrf_k: int = 60,
+    ) -> HybridPipeline:
+        """Build a hybrid pipeline from already-loaded documents."""
+        chunks = _build_chunks(documents, chunk_size=chunk_size, overlap=overlap)
+        resolved_embedder = embedder or SentenceTransformerEmbedder(model_name=model_name)
+
+        return cls(
+            documents=list(documents),
+            chunks=chunks,
+            sparse_retriever=BM25Retriever(chunks),
+            dense_retriever=DenseRetriever(chunks=chunks, embedder=resolved_embedder),
+            rrf_k=rrf_k,
+        )
+
+    @classmethod
+    def from_directory(
+        cls,
+        data_dir: str | Path,
+        embedder: TextEmbedder | None = None,
+        chunk_size: int = 300,
+        overlap: int = 50,
+        model_name: str = "all-MiniLM-L6-v2",
+        rrf_k: int = 60,
+    ) -> HybridPipeline:
+        """Load `.txt` documents, chunk them, and build a hybrid index."""
+        documents = _load_documents(data_dir)
+
+        return cls.from_documents(
+            documents=documents,
+            embedder=embedder,
+            chunk_size=chunk_size,
+            overlap=overlap,
+            model_name=model_name,
+            rrf_k=rrf_k,
+        )
+
+    def search(self, query: str, top_k: int = 5) -> list[RetrievalResult]:
+        """Run sparse and dense retrieval, then fuse the rankings with RRF."""
+        if top_k <= 0:
+            return []
+
+        sparse_results = self.sparse_retriever.search(query=query, top_k=top_k)
+        dense_results = self.dense_retriever.search(query=query, top_k=top_k)
+        return reciprocal_rank_fusion(
+            [sparse_results, dense_results],
+            top_k=top_k,
+            k=self.rrf_k,
+        )
