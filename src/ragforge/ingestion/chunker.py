@@ -1,3 +1,31 @@
+
+'''
+Chunking exists because retrieval works better on smaller text than on whole documents. 
+If a full document is too large :
+- Relevent evidence gets diluted
+- Exact ranking becomes harder
+
+Caveat : 
+This project currently uses character-based chunking, not token-based chunking.
+This is simple but not idea for production.
+
+Bad chunking can make a good retriever perform poorly.
+
+Bascially we load files and cut them into searchable pieces.
+
+Functions implemented :
+1. chunk_text()
+- Splits long text into overlapping character chunks
+
+2. chunk_documents()
+- Converts Document[] into Chunk[]
+
+
+Question to ask yourself :
+-> Why chunking matters more than most RAG tutorials admit ?
+-> How a simple chunker changes retrieval quality ?
+
+'''
 from __future__ import annotations
 
 from ragforge.core.schemas import Chunk, Document
@@ -8,13 +36,14 @@ def chunk_text(text: str, chunk_size: int = 300, overlap: int = 50) -> list[str]
     Split text into overlapping character-based chunks.
 
     Args:
-        text: The text to chunk.
-        chunk_size: The size of each chunk.
-        overlap: The number of overlapping characters between chunks.
+        text (str): The text to chunk
+        chunk_size : The size of each chunk
+        overlap : The the number of overlapping characters between chunks
 
     Returns:
-        A list of chunked strings.
+        A list of chunnked strings
     """
+    # Initial checks on the parameters
     if chunk_size <= 0:
         raise ValueError("chunk_size must be > 0")
     if overlap < 0:
@@ -22,10 +51,12 @@ def chunk_text(text: str, chunk_size: int = 300, overlap: int = 50) -> list[str]
     if overlap >= chunk_size:
         raise ValueError("overlap must be < chunk_size")
 
+    # Check if we have received valid text
     text = text.strip()
     if not text:
         return []
 
+    # Initialize list of chunk strings
     chunks: list[str] = []
     start = 0
     step = chunk_size - overlap
@@ -33,6 +64,7 @@ def chunk_text(text: str, chunk_size: int = 300, overlap: int = 50) -> list[str]
     while start < len(text):
         end = start + chunk_size
         chunk = text[start:end].strip()
+        # check chunk
         if chunk:
             chunks.append(chunk)
         start += step
