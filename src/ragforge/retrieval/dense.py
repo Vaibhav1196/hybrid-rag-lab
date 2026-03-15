@@ -6,7 +6,13 @@ This code defines a dense retrievr for RAG, what it does is
 - Rank chunks by similarity
 - Return the top k results
 
-So this is a simple semantic search component
+
+Whats happening here ?
+
+“Take all document chunks, embed them, normalize them, and store them.
+When a query comes in, embed and normalize it too.
+Compare the query to every chunk using cosine similarity.
+Keep the chunks with positive similarity, sort them from most similar to least similar, and return the best ones.”
 
 """
 
