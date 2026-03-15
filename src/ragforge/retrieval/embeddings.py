@@ -74,4 +74,7 @@ class SentenceTransformerEmbedder:
             convert_to_numpy=True,
             normalize_embeddings=True,
         )
+
+        # some embeddings use float64 but we will use float32
+        # it uses half the memory, float32 is standard for embeddings and is faster in vector math
         return np.asarray(embeddings, dtype=np.float32)
