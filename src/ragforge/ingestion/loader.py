@@ -14,6 +14,8 @@ from pathlib import Path
 from ragforge.core.schemas import Document
 
 
+#----------------------------------------------------------------------------------
+
 def load_text_documents(data_dir: str | Path) -> list[Document]:
     """Load non-empty `.txt` files from a directory into `Document` objects."""
     data_path = Path(data_dir)
@@ -45,3 +47,6 @@ def load_text_documents(data_dir: str | Path) -> list[Document]:
         )
 
     return documents
+
+
+#----------------------------------------------------------------------------------

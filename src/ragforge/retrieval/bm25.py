@@ -36,10 +36,16 @@ from rank_bm25 import BM25Okapi
 from ragforge.core.schemas import Chunk, RetrievalResult
 
 
+
+#----------------------------------------------------------------------------------
+
+
 def tokenize(text: str) -> list[str]:
     """Normalize text into simple lowercase whitespace tokens for BM25."""
     return text.lower().split()
 
+
+#----------------------------------------------------------------------------------
 
 class BM25Retriever:
     """Sparse retriever that ranks chunks with BM25."""
@@ -51,6 +57,8 @@ class BM25Retriever:
         self.chunks = chunks
         self.tokenized_corpus = [tokenize(chunk.text) for chunk in chunks]
         self.bm25 = BM25Okapi(self.tokenized_corpus)
+
+        
 
     def search(self, query: str, top_k: int = 5) -> list[RetrievalResult]:
         """Search the chunk index and return ranked BM25 retrieval results."""
@@ -83,3 +91,6 @@ class BM25Retriever:
             )
 
         return results
+
+
+#----------------------------------------------------------------------------------

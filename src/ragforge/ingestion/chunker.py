@@ -31,6 +31,8 @@ from __future__ import annotations
 from ragforge.core.schemas import Chunk, Document
 
 
+#----------------------------------------------------------------------------------
+
 def chunk_text(text: str, chunk_size: int = 300, overlap: int = 50) -> list[str]:
     """
     Split text into overlapping character-based chunks.
@@ -72,6 +74,8 @@ def chunk_text(text: str, chunk_size: int = 300, overlap: int = 50) -> list[str]
     return chunks
 
 
+#----------------------------------------------------------------------------------
+
 def chunk_documents(
     documents: list[Document],
     chunk_size: int = 300,
@@ -97,3 +101,6 @@ def chunk_documents(
             )
 
     return all_chunks
+
+
+#----------------------------------------------------------------------------------

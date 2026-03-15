@@ -20,6 +20,8 @@ from typing import Protocol
 import numpy as np
 
 
+#----------------------------------------------------------------------------------
+
 # This defines an interface for embedding models.
 class TextEmbedder(Protocol):
     """Protocol for embedding text into dense vectors."""
@@ -34,6 +36,8 @@ class TextEmbedder(Protocol):
     def encode(self, texts: list[str]) -> np.ndarray:
         """Encode a batch of texts into a 2D numpy array."""
 
+
+#----------------------------------------------------------------------------------
 
 # This is a concrete implementation of the TextEmbedder interface.
 # This is a wrapper around the sentence-transformers library.
@@ -78,3 +82,5 @@ class SentenceTransformerEmbedder:
         # some embeddings use float64 but we will use float32
         # it uses half the memory, float32 is standard for embeddings and is faster in vector math
         return np.asarray(embeddings, dtype=np.float32)
+
+#----------------------------------------------------------------------------------

@@ -1,3 +1,15 @@
+"""
+This code defines a dense retrievr for RAG, what it does is
+- Convert each chunk into embedding vector
+- Convert the query into embedding vector
+- Compare the cosine similarity between the query vector and each chunk vector
+- Rank chunks by similarity
+- Return the top k results
+
+So this is a simple semantic search component
+
+"""
+
 from __future__ import annotations
 
 import numpy as np
@@ -6,14 +18,40 @@ from ragforge.core.schemas import Chunk, RetrievalResult
 from ragforge.retrieval.embeddings import TextEmbedder
 
 
+
+#----------------------------------------------------------------------------------
+
+# Helper function 1 : _as_2d_float32
+# This makes sure the embeddings are in a clean predictable format :
+# - Numpy array 
+# - float32
+# - 2D shape
 def _as_2d_float32(array: np.ndarray) -> np.ndarray:
     """Convert encoder output into a 2D float32 matrix."""
+
+    # This ensures the data is a NumPy array and uses float32, which is common for embeddings.
+    # input could be a list, tuple or a numpy array
+    # the output will become numpy array of float32 
     matrix = np.asarray(array, dtype=np.float32)
+    # If 1D turn it into a single-row 2D matrix
+    # If the embedding looks like this: [0.1, 0.2, 0.3], its shape is (3,), which is 1D.
+    # This reshapes it to: [[0.1, 0.2, 0.3]] with shape (1, 3).
+    # Why? Because the rest of the code expects a batch-style 2D matrix :
+    # - rows = embeddings
+    # - columns = dimensions
     if matrix.ndim == 1:
         matrix = matrix.reshape(1, -1)
+    
+    # Reject anything that still isn’t 2D
+    # This protects against malformed encoder output.
     if matrix.ndim != 2:
         raise ValueError("Embeddings must be a 2D array.")
     return matrix
+
+
+
+#----------------------------------------------------------------------------------
+
 
 
 def _normalize_rows(matrix: np.ndarray) -> np.ndarray:
@@ -22,6 +60,10 @@ def _normalize_rows(matrix: np.ndarray) -> np.ndarray:
     safe_norms = np.where(norms == 0, 1.0, norms)
     return matrix / safe_norms
 
+
+
+
+#----------------------------------------------------------------------------------
 
 class DenseRetriever:
     """Dense retriever that ranks chunks with cosine similarity."""
@@ -70,3 +112,5 @@ class DenseRetriever:
             )
             for index in ranked_indices
         ]
+
+#----------------------------------------------------------------------------------
