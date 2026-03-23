@@ -225,7 +225,29 @@ below.
 You can also inspect the [Makefile](./Makefile)
 to see the exact commands each `make` target runs.
 
+Direct commands without `make`:
+
 Set up the local virtual environment and install dependencies:
+
+```bash
+uv venv .venv --python 3.11
+uv pip install -e ".[dev]"
+```
+
+Clean caches and the local virtual environment:
+
+```bash
+find . -type d -name "__pycache__" -exec rm -rf {} +
+rm -rf .venv .pytest_cache .ruff_cache
+```
+
+Run the full test suite:
+
+```bash
+uv run pytest -v --maxfail=1 --disable-warnings -q
+```
+
+If you prefer the Makefile wrappers, the equivalent commands are:
 
 ```
 make setup

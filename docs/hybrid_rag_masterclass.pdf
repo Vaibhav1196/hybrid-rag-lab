@@ -1,0 +1,453 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Count 8 /Kids [3 0 R 5 0 R 7 0 R 9 0 R 11 0 R 13 0 R 15 0 R 17 0 R] >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 19 0 R >> >> /Contents 4 0 R >>
+endobj
+4 0 obj
+<< /Length 2267 >>
+stream
+BT
+/F1 11 Tf
+1 0 0 1 50 732 Tm (HYBRID RAG MASTERCLASS) Tj
+1 0 0 1 50 717 Tm () Tj
+1 0 0 1 50 702 Tm (This document teaches the full build-out of the `hybrid-rag-lab` project from scratch. It is) Tj
+1 0 0 1 50 687 Tm (written as a single-stop guide for understanding the architecture, the implementation) Tj
+1 0 0 1 50 672 Tm (sequence, and the reasoning behind each layer.) Tj
+1 0 0 1 50 657 Tm () Tj
+1 0 0 1 50 642 Tm (1. WHAT WE ARE BUILDING) Tj
+1 0 0 1 50 627 Tm () Tj
+1 0 0 1 50 612 Tm (A production-minded Hybrid RAG system has multiple stages:) Tj
+1 0 0 1 50 597 Tm () Tj
+1 0 0 1 50 582 Tm (1. ingestion) Tj
+1 0 0 1 50 567 Tm (2. retrieval) Tj
+1 0 0 1 50 552 Tm (3. fusion) Tj
+1 0 0 1 50 537 Tm (4. reranking) Tj
+1 0 0 1 50 522 Tm (5. context construction) Tj
+1 0 0 1 50 507 Tm (6. answer generation) Tj
+1 0 0 1 50 492 Tm (7. retrieval evaluation) Tj
+1 0 0 1 50 477 Tm (8. answer evaluation) Tj
+1 0 0 1 50 462 Tm (9. observability) Tj
+1 0 0 1 50 447 Tm () Tj
+1 0 0 1 50 432 Tm (The project implements those stages incrementally so that each layer stays understandable) Tj
+1 0 0 1 50 417 Tm (and testable.) Tj
+1 0 0 1 50 402 Tm () Tj
+1 0 0 1 50 387 Tm (2. CORE PRINCIPLES) Tj
+1 0 0 1 50 372 Tm () Tj
+1 0 0 1 50 357 Tm (The repository follows a few important engineering rules:) Tj
+1 0 0 1 50 342 Tm () Tj
+1 0 0 1 50 327 Tm (- use structured data objects instead of loose dictionaries) Tj
+1 0 0 1 50 312 Tm (- keep responsibilities separate by module) Tj
+1 0 0 1 50 297 Tm (- make every stage independently testable) Tj
+1 0 0 1 50 282 Tm (- keep retrieval and generation decoupled) Tj
+1 0 0 1 50 267 Tm (- add evaluation only after the corresponding runtime layer exists) Tj
+1 0 0 1 50 252 Tm () Tj
+1 0 0 1 50 237 Tm (That is why `Document`, `Chunk`, and `RetrievalResult` were introduced first. They are the) Tj
+1 0 0 1 50 222 Tm (contracts the rest of the system builds on.) Tj
+1 0 0 1 50 207 Tm () Tj
+1 0 0 1 50 192 Tm (3. INGESTION) Tj
+1 0 0 1 50 177 Tm () Tj
+1 0 0 1 50 162 Tm (The ingestion layer has two jobs:) Tj
+1 0 0 1 50 147 Tm () Tj
+1 0 0 1 50 132 Tm (1. load raw `.txt` files into `Document`) Tj
+1 0 0 1 50 117 Tm (2. split `Document` objects into `Chunk`) Tj
+1 0 0 1 50 102 Tm () Tj
+1 0 0 1 50 87 Tm (This lives under:) Tj
+1 0 0 1 50 72 Tm () Tj
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 19 0 R >> >> /Contents 6 0 R >>
+endobj
+6 0 obj
+<< /Length 2286 >>
+stream
+BT
+/F1 11 Tf
+1 0 0 1 50 732 Tm (- `src/ragforge/ingestion/loader.py`) Tj
+1 0 0 1 50 717 Tm (- `src/ragforge/ingestion/chunker.py`) Tj
+1 0 0 1 50 702 Tm () Tj
+1 0 0 1 50 687 Tm (Why this matters:) Tj
+1 0 0 1 50 672 Tm () Tj
+1 0 0 1 50 657 Tm (- retrieval should not know about the filesystem) Tj
+1 0 0 1 50 642 Tm (- generation should not know how chunking works) Tj
+1 0 0 1 50 627 Tm (- chunking strategy can evolve later without rewriting the rest of the system) Tj
+1 0 0 1 50 612 Tm () Tj
+1 0 0 1 50 597 Tm (4. SPARSE RETRIEVAL WITH BM25) Tj
+1 0 0 1 50 582 Tm () Tj
+1 0 0 1 50 567 Tm (The first retriever added was BM25. It is a lexical retriever, which means it relies on) Tj
+1 0 0 1 50 552 Tm (token overlap between the query and the chunk text.) Tj
+1 0 0 1 50 537 Tm () Tj
+1 0 0 1 50 522 Tm (BM25 is valuable because:) Tj
+1 0 0 1 50 507 Tm () Tj
+1 0 0 1 50 492 Tm (- it is fast) Tj
+1 0 0 1 50 477 Tm (- it is simple) Tj
+1 0 0 1 50 462 Tm (- it is strong on exact-match queries) Tj
+1 0 0 1 50 447 Tm (- it provides a clean baseline) Tj
+1 0 0 1 50 432 Tm () Tj
+1 0 0 1 50 417 Tm (It lives in:) Tj
+1 0 0 1 50 402 Tm () Tj
+1 0 0 1 50 387 Tm (- `src/ragforge/retrieval/bm25.py`) Tj
+1 0 0 1 50 372 Tm () Tj
+1 0 0 1 50 357 Tm (The first full pipeline built on top of it was `BM25Pipeline`, which loads documents, chunks) Tj
+1 0 0 1 50 342 Tm (them, indexes them, and exposes `search\(\)`.) Tj
+1 0 0 1 50 327 Tm () Tj
+1 0 0 1 50 312 Tm (5. DENSE RETRIEVAL) Tj
+1 0 0 1 50 297 Tm () Tj
+1 0 0 1 50 282 Tm (The second retriever added was dense retrieval. This stage embeds chunks and the query into) Tj
+1 0 0 1 50 267 Tm (vectors, then uses cosine similarity to rank candidates.) Tj
+1 0 0 1 50 252 Tm () Tj
+1 0 0 1 50 237 Tm (Files:) Tj
+1 0 0 1 50 222 Tm () Tj
+1 0 0 1 50 207 Tm (- `src/ragforge/retrieval/embeddings.py`) Tj
+1 0 0 1 50 192 Tm (- `src/ragforge/retrieval/dense.py`) Tj
+1 0 0 1 50 177 Tm () Tj
+1 0 0 1 50 162 Tm (Why it exists:) Tj
+1 0 0 1 50 147 Tm () Tj
+1 0 0 1 50 132 Tm (- BM25 is strong on exact wording) Tj
+1 0 0 1 50 117 Tm (- dense retrieval is stronger on paraphrases and semantic similarity) Tj
+1 0 0 1 50 102 Tm () Tj
+1 0 0 1 50 87 Tm (This gave the project a second retrieval signal with the same output contract:) Tj
+1 0 0 1 50 72 Tm (`list[RetrievalResult]`.) Tj
+ET
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 19 0 R >> >> /Contents 8 0 R >>
+endobj
+8 0 obj
+<< /Length 2119 >>
+stream
+BT
+/F1 11 Tf
+1 0 0 1 50 732 Tm () Tj
+1 0 0 1 50 717 Tm (6. FUSION) Tj
+1 0 0 1 50 702 Tm () Tj
+1 0 0 1 50 687 Tm (After sparse and dense retrieval were in place, the system became truly hybrid by adding) Tj
+1 0 0 1 50 672 Tm (Reciprocal Rank Fusion.) Tj
+1 0 0 1 50 657 Tm () Tj
+1 0 0 1 50 642 Tm (File:) Tj
+1 0 0 1 50 627 Tm () Tj
+1 0 0 1 50 612 Tm (- `src/ragforge/retrieval/fusion.py`) Tj
+1 0 0 1 50 597 Tm () Tj
+1 0 0 1 50 582 Tm (Why RRF was used:) Tj
+1 0 0 1 50 567 Tm () Tj
+1 0 0 1 50 552 Tm (- BM25 and dense scores are not directly comparable) Tj
+1 0 0 1 50 537 Tm (- RRF combines ranks instead of raw scores) Tj
+1 0 0 1 50 522 Tm (- it is robust and standard for early hybrid systems) Tj
+1 0 0 1 50 507 Tm () Tj
+1 0 0 1 50 492 Tm (The result was `HybridPipeline`.) Tj
+1 0 0 1 50 477 Tm () Tj
+1 0 0 1 50 462 Tm (7. RERANKING) Tj
+1 0 0 1 50 447 Tm () Tj
+1 0 0 1 50 432 Tm (Fusion improves recall and ranking stability, but it still returns a shortlist. The next) Tj
+1 0 0 1 50 417 Tm (step was reranking.) Tj
+1 0 0 1 50 402 Tm () Tj
+1 0 0 1 50 387 Tm (File:) Tj
+1 0 0 1 50 372 Tm () Tj
+1 0 0 1 50 357 Tm (- `src/ragforge/retrieval/reranking.py`) Tj
+1 0 0 1 50 342 Tm () Tj
+1 0 0 1 50 327 Tm (Reranking uses a cross-encoder-style scoring layer over the fused shortlist. This is more) Tj
+1 0 0 1 50 312 Tm (expensive than retrieval, so it should only run on a small candidate set.) Tj
+1 0 0 1 50 297 Tm () Tj
+1 0 0 1 50 282 Tm (The result was `RerankedHybridPipeline`.) Tj
+1 0 0 1 50 267 Tm () Tj
+1 0 0 1 50 252 Tm (8. RETRIEVAL EVALUATION) Tj
+1 0 0 1 50 237 Tm () Tj
+1 0 0 1 50 222 Tm (Once retrieval existed, evaluation could be added in a meaningful way.) Tj
+1 0 0 1 50 207 Tm () Tj
+1 0 0 1 50 192 Tm (Files:) Tj
+1 0 0 1 50 177 Tm () Tj
+1 0 0 1 50 162 Tm (- `src/ragforge/evaluation/schemas.py`) Tj
+1 0 0 1 50 147 Tm (- `src/ragforge/evaluation/datasets.py`) Tj
+1 0 0 1 50 132 Tm (- `src/ragforge/evaluation/retrieval.py`) Tj
+1 0 0 1 50 117 Tm (- `scripts/run_retrieval_eval.py`) Tj
+1 0 0 1 50 102 Tm () Tj
+1 0 0 1 50 87 Tm (This layer evaluates any retrieval pipeline that exposes:) Tj
+1 0 0 1 50 72 Tm () Tj
+ET
+endstream
+endobj
+9 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 19 0 R >> >> /Contents 10 0 R >>
+endobj
+10 0 obj
+<< /Length 2056 >>
+stream
+BT
+/F1 11 Tf
+1 0 0 1 50 732 Tm (```python) Tj
+1 0 0 1 50 717 Tm (search\(query: str, top_k: int\) -> list[RetrievalResult]) Tj
+1 0 0 1 50 702 Tm (```) Tj
+1 0 0 1 50 687 Tm () Tj
+1 0 0 1 50 672 Tm (Metrics implemented:) Tj
+1 0 0 1 50 657 Tm () Tj
+1 0 0 1 50 642 Tm (- Hit Rate@k) Tj
+1 0 0 1 50 627 Tm (- Mean Reciprocal Rank) Tj
+1 0 0 1 50 612 Tm (- Recall@k) Tj
+1 0 0 1 50 597 Tm () Tj
+1 0 0 1 50 582 Tm (Datasets created:) Tj
+1 0 0 1 50 567 Tm () Tj
+1 0 0 1 50 552 Tm (- `data/evals/retrieval_eval.jsonl`) Tj
+1 0 0 1 50 537 Tm (- `data/evals/retrieval_eval_hard.jsonl`) Tj
+1 0 0 1 50 522 Tm (- `data/evals/retrieval_eval_chunked.jsonl`) Tj
+1 0 0 1 50 507 Tm () Tj
+1 0 0 1 50 492 Tm (Important lesson:) Tj
+1 0 0 1 50 477 Tm () Tj
+1 0 0 1 50 462 Tm (retrieval evaluation should happen before answer evaluation. If retrieval is weak, answer) Tj
+1 0 0 1 50 447 Tm (quality will be unstable no matter how strong the LLM is.) Tj
+1 0 0 1 50 432 Tm () Tj
+1 0 0 1 50 417 Tm (9. CONTEXT CONSTRUCTION) Tj
+1 0 0 1 50 402 Tm () Tj
+1 0 0 1 50 387 Tm (After retrieval and reranking, the next missing layer was the bridge into generation.) Tj
+1 0 0 1 50 372 Tm () Tj
+1 0 0 1 50 357 Tm (File:) Tj
+1 0 0 1 50 342 Tm () Tj
+1 0 0 1 50 327 Tm (- `src/ragforge/generation/context.py`) Tj
+1 0 0 1 50 312 Tm () Tj
+1 0 0 1 50 297 Tm (This stage takes the ranked shortlist and turns it into:) Tj
+1 0 0 1 50 282 Tm () Tj
+1 0 0 1 50 267 Tm (- ordered evidence snippets) Tj
+1 0 0 1 50 252 Tm (- citations) Tj
+1 0 0 1 50 237 Tm (- a prompt-ready context block) Tj
+1 0 0 1 50 222 Tm (- a bounded context budget) Tj
+1 0 0 1 50 207 Tm () Tj
+1 0 0 1 50 192 Tm (This stage is important because the LLM should consume a clean, explicit context object, not) Tj
+1 0 0 1 50 177 Tm (arbitrary retrieval results.) Tj
+1 0 0 1 50 162 Tm () Tj
+1 0 0 1 50 147 Tm (10. LLM GENERATION) Tj
+1 0 0 1 50 132 Tm () Tj
+1 0 0 1 50 117 Tm (Generation lives in:) Tj
+1 0 0 1 50 102 Tm () Tj
+1 0 0 1 50 87 Tm (- `src/ragforge/generation/llm.py`) Tj
+1 0 0 1 50 72 Tm (- `src/ragforge/generation/pipeline.py`) Tj
+ET
+endstream
+endobj
+11 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 19 0 R >> >> /Contents 12 0 R >>
+endobj
+12 0 obj
+<< /Length 2104 >>
+stream
+BT
+/F1 11 Tf
+1 0 0 1 50 732 Tm (- `src/ragforge/generation/schemas.py`) Tj
+1 0 0 1 50 717 Tm () Tj
+1 0 0 1 50 702 Tm (There are two generation modes:) Tj
+1 0 0 1 50 687 Tm () Tj
+1 0 0 1 50 672 Tm (1. `ExtractiveFallbackLLM`) Tj
+1 0 0 1 50 657 Tm (2. `OpenAICompatibleLLM`) Tj
+1 0 0 1 50 642 Tm () Tj
+1 0 0 1 50 627 Tm (Why both exist:) Tj
+1 0 0 1 50 612 Tm () Tj
+1 0 0 1 50 597 Tm (- the fallback client makes the project runnable offline and testable) Tj
+1 0 0 1 50 582 Tm (- the OpenAI-compatible client makes the architecture ready for a real model backend) Tj
+1 0 0 1 50 567 Tm () Tj
+1 0 0 1 50 552 Tm (The main runtime object is `RAGPipeline`, which does:) Tj
+1 0 0 1 50 537 Tm () Tj
+1 0 0 1 50 522 Tm (1. retrieval) Tj
+1 0 0 1 50 507 Tm (2. context construction) Tj
+1 0 0 1 50 492 Tm (3. prompt building) Tj
+1 0 0 1 50 477 Tm (4. generation) Tj
+1 0 0 1 50 462 Tm () Tj
+1 0 0 1 50 447 Tm (11. ANSWER EVALUATION) Tj
+1 0 0 1 50 432 Tm () Tj
+1 0 0 1 50 417 Tm (After generation exists, answer-level evaluation becomes meaningful.) Tj
+1 0 0 1 50 402 Tm () Tj
+1 0 0 1 50 387 Tm (Files:) Tj
+1 0 0 1 50 372 Tm () Tj
+1 0 0 1 50 357 Tm (- `src/ragforge/evaluation/generation.py`) Tj
+1 0 0 1 50 342 Tm (- `data/evals/answer_eval.jsonl`) Tj
+1 0 0 1 50 327 Tm (- `scripts/run_answer_eval.py`) Tj
+1 0 0 1 50 312 Tm () Tj
+1 0 0 1 50 297 Tm (Two answer-evaluation layers exist:) Tj
+1 0 0 1 50 282 Tm () Tj
+1 0 0 1 50 267 Tm (1. heuristic evaluation) Tj
+1 0 0 1 50 252 Tm (2. LLM-as-judge scaffold) Tj
+1 0 0 1 50 237 Tm () Tj
+1 0 0 1 50 222 Tm (Heuristic evaluation checks:) Tj
+1 0 0 1 50 207 Tm () Tj
+1 0 0 1 50 192 Tm (- answer presence) Tj
+1 0 0 1 50 177 Tm (- citation usage) Tj
+1 0 0 1 50 162 Tm (- grounding to relevant context) Tj
+1 0 0 1 50 147 Tm (- overlap with the reference answer) Tj
+1 0 0 1 50 132 Tm () Tj
+1 0 0 1 50 117 Tm (The judge scaffold builds a rubric-driven prompt and expects structured JSON back from a) Tj
+1 0 0 1 50 102 Tm (judge model. This makes it possible to add a real LLM judge without rewriting the) Tj
+1 0 0 1 50 87 Tm (surrounding evaluation layer.) Tj
+1 0 0 1 50 72 Tm () Tj
+ET
+endstream
+endobj
+13 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 19 0 R >> >> /Contents 14 0 R >>
+endobj
+14 0 obj
+<< /Length 2259 >>
+stream
+BT
+/F1 11 Tf
+1 0 0 1 50 732 Tm (12. OBSERVABILITY) Tj
+1 0 0 1 50 717 Tm () Tj
+1 0 0 1 50 702 Tm (Observability starts in:) Tj
+1 0 0 1 50 687 Tm () Tj
+1 0 0 1 50 672 Tm (- `src/ragforge/core/telemetry.py`) Tj
+1 0 0 1 50 657 Tm () Tj
+1 0 0 1 50 642 Tm (The current implementation records stage timings and pipeline metadata. This is) Tj
+1 0 0 1 50 627 Tm (intentionally lightweight, but it establishes the correct design boundary.) Tj
+1 0 0 1 50 612 Tm () Tj
+1 0 0 1 50 597 Tm (Tracked concepts:) Tj
+1 0 0 1 50 582 Tm () Tj
+1 0 0 1 50 567 Tm (- retrieval latency) Tj
+1 0 0 1 50 552 Tm (- context construction latency) Tj
+1 0 0 1 50 537 Tm (- generation latency) Tj
+1 0 0 1 50 522 Tm (- model name) Tj
+1 0 0 1 50 507 Tm (- number of retrieved results) Tj
+1 0 0 1 50 492 Tm (- number of context snippets) Tj
+1 0 0 1 50 477 Tm () Tj
+1 0 0 1 50 462 Tm (This is the beginning of a real observability layer. Later it can expand into structured) Tj
+1 0 0 1 50 447 Tm (logs, traces, dashboards, and experiment tracking.) Tj
+1 0 0 1 50 432 Tm () Tj
+1 0 0 1 50 417 Tm (13. HOW THE FULL PIPELINE WORKS) Tj
+1 0 0 1 50 402 Tm () Tj
+1 0 0 1 50 387 Tm (At this point, the runtime architecture is:) Tj
+1 0 0 1 50 372 Tm () Tj
+1 0 0 1 50 357 Tm (1. load documents) Tj
+1 0 0 1 50 342 Tm (2. chunk them) Tj
+1 0 0 1 50 327 Tm (3. run BM25 retrieval) Tj
+1 0 0 1 50 312 Tm (4. run dense retrieval) Tj
+1 0 0 1 50 297 Tm (5. fuse ranks with RRF) Tj
+1 0 0 1 50 282 Tm (6. rerank the fused shortlist) Tj
+1 0 0 1 50 267 Tm (7. construct prompt context) Tj
+1 0 0 1 50 252 Tm (8. generate a grounded answer) Tj
+1 0 0 1 50 237 Tm (9. evaluate retrieval quality) Tj
+1 0 0 1 50 222 Tm (10. evaluate answer quality) Tj
+1 0 0 1 50 207 Tm (11. record timings and metadata) Tj
+1 0 0 1 50 192 Tm () Tj
+1 0 0 1 50 177 Tm (14. WHY THE ARCHITECTURE IS PRODUCTION-MINDED) Tj
+1 0 0 1 50 162 Tm () Tj
+1 0 0 1 50 147 Tm (This project stays production-minded because:) Tj
+1 0 0 1 50 132 Tm () Tj
+1 0 0 1 50 117 Tm (- each layer is independently replaceable) Tj
+1 0 0 1 50 102 Tm (- the same retrieval contract is reused throughout the system) Tj
+1 0 0 1 50 87 Tm (- evaluation is separated from runtime logic) Tj
+1 0 0 1 50 72 Tm (- external-model integration is hidden behind protocols and adapters) Tj
+ET
+endstream
+endobj
+15 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 19 0 R >> >> /Contents 16 0 R >>
+endobj
+16 0 obj
+<< /Length 2278 >>
+stream
+BT
+/F1 11 Tf
+1 0 0 1 50 732 Tm (- the offline fallback path keeps local development practical) Tj
+1 0 0 1 50 717 Tm () Tj
+1 0 0 1 50 702 Tm (This means the system can grow without collapsing into a script pile.) Tj
+1 0 0 1 50 687 Tm () Tj
+1 0 0 1 50 672 Tm (15. WHAT TO FOCUS ON TO MASTER HYBRID RAG) Tj
+1 0 0 1 50 657 Tm () Tj
+1 0 0 1 50 642 Tm (If you want to master the architecture, focus on these ideas:) Tj
+1 0 0 1 50 627 Tm () Tj
+1 0 0 1 50 612 Tm (A. RETRIEVAL IS A MULTI-STAGE RANKING PROBLEM) Tj
+1 0 0 1 50 597 Tm () Tj
+1 0 0 1 50 582 Tm (It is not one model. It is a sequence:) Tj
+1 0 0 1 50 567 Tm () Tj
+1 0 0 1 50 552 Tm (- sparse retrieval) Tj
+1 0 0 1 50 537 Tm (- dense retrieval) Tj
+1 0 0 1 50 522 Tm (- fusion) Tj
+1 0 0 1 50 507 Tm (- reranking) Tj
+1 0 0 1 50 492 Tm () Tj
+1 0 0 1 50 477 Tm (B. GENERATION QUALITY DEPENDS ON CONTEXT QUALITY) Tj
+1 0 0 1 50 462 Tm () Tj
+1 0 0 1 50 447 Tm (The LLM is only as good as the evidence it receives.) Tj
+1 0 0 1 50 432 Tm () Tj
+1 0 0 1 50 417 Tm (C. EVALUATION MUST EXIST AT MULTIPLE LEVELS) Tj
+1 0 0 1 50 402 Tm () Tj
+1 0 0 1 50 387 Tm (- retrieval evaluation) Tj
+1 0 0 1 50 372 Tm (- answer evaluation) Tj
+1 0 0 1 50 357 Tm (- judge-based evaluation) Tj
+1 0 0 1 50 342 Tm (- operational metrics) Tj
+1 0 0 1 50 327 Tm () Tj
+1 0 0 1 50 312 Tm (D. OBSERVABILITY IS PART OF THE PRODUCT, NOT A LATER ADD-ON) Tj
+1 0 0 1 50 297 Tm () Tj
+1 0 0 1 50 282 Tm (If you cannot measure latency, ranking quality, and answer quality, you do not really) Tj
+1 0 0 1 50 267 Tm (control the system.) Tj
+1 0 0 1 50 252 Tm () Tj
+1 0 0 1 50 237 Tm (16. RECOMMENDED NEXT EXTENSIONS) Tj
+1 0 0 1 50 222 Tm () Tj
+1 0 0 1 50 207 Tm (After the current implementation, the strongest next improvements are:) Tj
+1 0 0 1 50 192 Tm () Tj
+1 0 0 1 50 177 Tm (1. a real answer-generation benchmark with multiple reference answers) Tj
+1 0 0 1 50 162 Tm (2. richer answer metrics such as citation precision and groundedness checks) Tj
+1 0 0 1 50 147 Tm (3. structured run logging to disk) Tj
+1 0 0 1 50 132 Tm (4. API endpoints for retrieval and generation) Tj
+1 0 0 1 50 117 Tm (5. embedding and reranker caching) Tj
+1 0 0 1 50 102 Tm (6. larger and more difficult retrieval corpora) Tj
+1 0 0 1 50 87 Tm () Tj
+1 0 0 1 50 72 Tm (17. FINAL MENTAL MODEL) Tj
+ET
+endstream
+endobj
+17 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 19 0 R >> >> /Contents 18 0 R >>
+endobj
+18 0 obj
+<< /Length 721 >>
+stream
+BT
+/F1 11 Tf
+1 0 0 1 50 732 Tm () Tj
+1 0 0 1 50 717 Tm (Use this mental model for the whole stack:) Tj
+1 0 0 1 50 702 Tm () Tj
+1 0 0 1 50 687 Tm (- ingestion prepares search units) Tj
+1 0 0 1 50 672 Tm (- retrieval finds evidence) Tj
+1 0 0 1 50 657 Tm (- fusion stabilizes ranking) Tj
+1 0 0 1 50 642 Tm (- reranking sharpens the shortlist) Tj
+1 0 0 1 50 627 Tm (- context construction prepares the prompt) Tj
+1 0 0 1 50 612 Tm (- generation produces the answer) Tj
+1 0 0 1 50 597 Tm (- evaluation measures quality) Tj
+1 0 0 1 50 582 Tm (- observability keeps the system accountable) Tj
+1 0 0 1 50 567 Tm () Tj
+1 0 0 1 50 552 Tm (That is the full Hybrid RAG architecture implemented step by step in this repository.) Tj
+ET
+endstream
+endobj
+19 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+xref
+0 20
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000161 00000 n 
+0000000288 00000 n 
+0000002607 00000 n 
+0000002734 00000 n 
+0000005072 00000 n 
+0000005199 00000 n 
+0000007370 00000 n 
+0000007498 00000 n 
+0000009607 00000 n 
+0000009736 00000 n 
+0000011893 00000 n 
+0000012022 00000 n 
+0000014334 00000 n 
+0000014463 00000 n 
+0000016794 00000 n 
+0000016923 00000 n 
+0000017696 00000 n 
+trailer
+<< /Size 20 /Root 1 0 R >>
+startxref
+17767
+%%EOF

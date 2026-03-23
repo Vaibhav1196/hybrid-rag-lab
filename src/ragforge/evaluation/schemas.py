@@ -47,3 +47,39 @@ class RetrievalEvaluationReport:
 
     metrics: RetrievalMetrics
     query_results: list[RetrievalQueryResult]
+
+
+@dataclass(slots=True)
+class AnswerEvaluationSample:
+    """A single labeled answer-generation query for evaluation."""
+
+    query_id: str
+    query: str
+    reference_answer: str
+    relevant_doc_ids: list[str] = field(default_factory=list)
+    relevant_chunk_ids: list[str] = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass(slots=True)
+class HeuristicAnswerEvaluation:
+    """Heuristic answer-evaluation result."""
+
+    query_id: str
+    answer_present: bool
+    cites_context: bool
+    grounded_to_relevant_context: bool
+    reference_term_overlap: float
+    overall_score: float
+
+
+@dataclass(slots=True)
+class LLMJudgeEvaluation:
+    """LLM-as-judge output for a generated answer."""
+
+    query_id: str
+    groundedness: float
+    correctness: float
+    completeness: float
+    overall: float
+    reason: str

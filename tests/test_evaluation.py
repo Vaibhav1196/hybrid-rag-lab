@@ -5,8 +5,8 @@ from pathlib import Path
 import pytest
 
 from ragforge.core.schemas import Chunk, RetrievalResult
-from ragforge.evaluation import evaluate_retrieval, load_retrieval_samples
-from ragforge.evaluation.schemas import RetrievalSample
+from ragforge.evaluation import evaluate_retrieval, load_answer_evaluation_samples, load_retrieval_samples
+from ragforge.evaluation.schemas import AnswerEvaluationSample, RetrievalSample
 
 
 class FakePipeline:
@@ -113,3 +113,26 @@ def test_load_retrieval_samples_reads_jsonl(tmp_path: Path) -> None:
     assert samples[0].query_id == "q1"
     assert samples[0].relevant_doc_ids == ["doc-1"]
     assert samples[1].relevant_chunk_ids == ["chunk-2"]
+
+
+def test_load_answer_evaluation_samples_reads_jsonl(tmp_path: Path) -> None:
+    dataset_path = tmp_path / "answer_eval.jsonl"
+    dataset_path.write_text(
+        '\n'.join(
+            [
+                '{"query_id":"a1","query":"what is rag","reference_answer":"RAG adds retrieved context","relevant_doc_ids":["rag"]}',
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    samples = load_answer_evaluation_samples(dataset_path)
+
+    assert samples == [
+        AnswerEvaluationSample(
+            query_id="a1",
+            query="what is rag",
+            reference_answer="RAG adds retrieved context",
+            relevant_doc_ids=["rag"],
+        )
+    ]
