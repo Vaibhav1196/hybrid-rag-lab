@@ -279,6 +279,13 @@ make test
 
 Run tests with debug output:
 
+## Execution Guide
+
+For a stage-by-stage runbook covering retrieval, evaluation, the full RAG pipeline, answer evaluation, and rebuilding the teaching PDF, see:
+
+- [Execution Guide](./docs/execution_guide.md)
+- [Hybrid RAG Masterclass](./docs/hybrid_rag_masterclass.md)
+
 ```
 make test-debug
 ```
