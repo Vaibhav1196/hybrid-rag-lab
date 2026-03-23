@@ -1,0 +1,12 @@
+{"query_id":"hq1","query":"which approach mixes lexical matching with semantic vector similarity to improve recall","relevant_doc_ids":["hybrid_retrieval"],"metadata":{"difficulty":"hard","topic":"hybrid_retrieval","style":"paraphrase"}}
+{"query_id":"hq2","query":"keyword search plus embedding search in one retrieval system","relevant_doc_ids":["hybrid_retrieval"],"metadata":{"difficulty":"hard","topic":"hybrid_retrieval","style":"paraphrase"}}
+{"query_id":"hq3","query":"tool for building llm apps with prompts retrievers and memory abstractions","relevant_doc_ids":["langchain"],"metadata":{"difficulty":"hard","topic":"langchain","style":"attribute_bundle"}}
+{"query_id":"hq4","query":"framework used for llm prototyping with chains and tool calling","relevant_doc_ids":["langchain"],"metadata":{"difficulty":"hard","topic":"langchain","style":"compressed"}}
+{"query_id":"hq5","query":"system for graph style orchestration of multi step agent workflows","relevant_doc_ids":["langgraph"],"metadata":{"difficulty":"hard","topic":"langgraph","style":"paraphrase"}}
+{"query_id":"hq6","query":"framework that gives more explicit control over execution flow than simple chains","relevant_doc_ids":["langgraph"],"metadata":{"difficulty":"hard","topic":"langgraph","style":"contrastive"}}
+{"query_id":"hq7","query":"pattern where retrieved external context is injected before answer generation","relevant_doc_ids":["rag"],"metadata":{"difficulty":"hard","topic":"rag","style":"paraphrase"}}
+{"query_id":"hq8","query":"approach for grounding model responses in documents to reduce hallucinations","relevant_doc_ids":["rag"],"metadata":{"difficulty":"hard","topic":"rag","style":"outcome_based"}}
+{"query_id":"hq9","query":"which document is about orchestration rather than retrieval","relevant_doc_ids":["langgraph"],"metadata":{"difficulty":"hard","topic":"langgraph","style":"contrastive"}}
+{"query_id":"hq10","query":"which document focuses on retrieval rather than application orchestration","relevant_doc_ids":["hybrid_retrieval"],"metadata":{"difficulty":"hard","topic":"hybrid_retrieval","style":"contrastive"}}
+{"query_id":"hq11","query":"what should you read if you want abstractions for prompts chains retrievers and tools","relevant_doc_ids":["langchain"],"metadata":{"difficulty":"hard","topic":"langchain","style":"instructional"}}
+{"query_id":"hq12","query":"what should you read if you want a definition of rag and why it reduces hallucinations","relevant_doc_ids":["rag"],"metadata":{"difficulty":"hard","topic":"rag","style":"instructional"}}

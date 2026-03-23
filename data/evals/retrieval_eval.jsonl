@@ -1,0 +1,8 @@
+{"query_id":"q1","query":"what is hybrid retrieval","relevant_doc_ids":["hybrid_retrieval"],"metadata":{"difficulty":"easy","topic":"hybrid_retrieval"}}
+{"query_id":"q2","query":"bm25 and dense embeddings together","relevant_doc_ids":["hybrid_retrieval"],"metadata":{"difficulty":"medium","topic":"hybrid_retrieval"}}
+{"query_id":"q3","query":"framework for retrieval augmented generation systems","relevant_doc_ids":["langchain"],"metadata":{"difficulty":"easy","topic":"langchain"}}
+{"query_id":"q4","query":"prompts chains retrievers memory and tool calling","relevant_doc_ids":["langchain"],"metadata":{"difficulty":"medium","topic":"langchain"}}
+{"query_id":"q5","query":"stateful multi step language model workflows","relevant_doc_ids":["langgraph"],"metadata":{"difficulty":"easy","topic":"langgraph"}}
+{"query_id":"q6","query":"graph based orchestration with execution flow and memory","relevant_doc_ids":["langgraph"],"metadata":{"difficulty":"medium","topic":"langgraph"}}
+{"query_id":"q7","query":"what is retrieval augmented generation","relevant_doc_ids":["rag"],"metadata":{"difficulty":"easy","topic":"rag"}}
+{"query_id":"q8","query":"ground responses in source documents to reduce hallucinations","relevant_doc_ids":["rag"],"metadata":{"difficulty":"medium","topic":"rag"}}
