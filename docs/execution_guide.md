@@ -151,19 +151,9 @@ uv run python scripts/run_answer_eval.py --eval-path data/evals/answer_eval.json
 
 ## 6. Teaching Artifacts
 
-Markdown guide:
-
-- `docs/hybrid_rag_masterclass.md`
-
 PDF guide:
 
 - `docs/hybrid_rag_masterclass.pdf`
-
-If you update the markdown guide and want to rebuild the PDF:
-
-```bash
-uv run python scripts/build_learning_pdf.py --input docs/hybrid_rag_masterclass.md --output docs/hybrid_rag_masterclass.pdf
-```
 
 ## 7. Recommended Order
 

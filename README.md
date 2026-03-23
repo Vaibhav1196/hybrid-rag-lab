@@ -284,7 +284,7 @@ Run tests with debug output:
 For a stage-by-stage runbook covering retrieval, evaluation, the full RAG pipeline, answer evaluation, and rebuilding the teaching PDF, see:
 
 - [Execution Guide](./docs/execution_guide.md)
-- [Hybrid RAG Masterclass](./docs/hybrid_rag_masterclass.md)
+- [Hybrid RAG Masterclass (PDF)](./docs/hybrid_rag_masterclass.pdf)
 
 ```
 make test-debug
