@@ -1,12 +1,12 @@
 # python -m app.ingestion.test_ingestion
 from __future__ import annotations
 
-from ragforge.ingestion.loader import load_text_documents
+from ragforge.ingestion.loader import load_documents
 from ragforge.ingestion.chunker import chunk_documents
 
 
 def main() -> None:
-    documents = load_text_documents("data")
+    documents = load_documents("data")
     chunks = chunk_documents(documents, chunk_size=120, overlap=20)
 
     print(f"Loaded {len(documents)} documents")

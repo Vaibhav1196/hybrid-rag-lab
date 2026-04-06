@@ -27,7 +27,7 @@ from pathlib import Path
 
 from ragforge.core.schemas import Chunk, Document, RetrievalResult
 from ragforge.ingestion.chunker import chunk_documents
-from ragforge.ingestion.loader import load_text_documents
+from ragforge.ingestion.loader import load_documents
 from ragforge.retrieval.bm25 import BM25Retriever
 from ragforge.retrieval.dense import DenseRetriever
 from ragforge.retrieval.embeddings import SentenceTransformerEmbedder, TextEmbedder
@@ -56,14 +56,14 @@ def _build_chunks(
 #----------------------------------------------------------------------------------
 
 # Helper function takes :
-# loads text documents from a directory
+# loads supported documents from a directory
 # checks that something was loaded
 # returns list of documents
 def _load_documents(data_dir: str | Path) -> list[Document]:
-    """Load and validate text documents for retrieval."""
-    documents = load_text_documents(data_dir)
+    """Load and validate supported documents for retrieval."""
+    documents = load_documents(data_dir)
     if not documents:
-        raise ValueError(f"No non-empty text documents found in: {Path(data_dir)}")
+        raise ValueError(f"No non-empty supported documents found in: {Path(data_dir)}")
     return documents
 
 

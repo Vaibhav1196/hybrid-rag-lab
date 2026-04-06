@@ -80,7 +80,7 @@ def test_dense_pipeline_rejects_directories_without_non_empty_documents(tmp_path
     write_text_file(tmp_path / "blank.txt", "   ")
     embedder = FakeEmbedder({})
 
-    with pytest.raises(ValueError, match="No non-empty text documents found"):
+    with pytest.raises(ValueError, match="No non-empty supported documents found"):
         DensePipeline.from_directory(tmp_path, embedder=embedder)
 
 
