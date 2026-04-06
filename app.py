@@ -1,5 +1,10 @@
 from __future__ import annotations
 
+import sys
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).parent / "src"))
+
 import gradio as gr
 
 from ragforge.demo import (
