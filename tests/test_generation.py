@@ -1,7 +1,14 @@
 from __future__ import annotations
 
+import pytest
+
 from ragforge.core.schemas import Chunk, RetrievalResult
-from ragforge.generation import ContextBuilder, ExtractiveFallbackLLM, RAGPipeline
+from ragforge.generation import (
+    ContextBuilder,
+    ExtractiveFallbackLLM,
+    HuggingFaceInferenceLLM,
+    RAGPipeline,
+)
 from ragforge.generation.schemas import LLMResponse
 
 
@@ -68,3 +75,29 @@ def test_extractive_fallback_llm_extracts_context_text() -> None:
     )
 
     assert response.content == "Useful answer sentence."
+
+
+def test_extractive_fallback_llm_prefers_query_matching_sentence() -> None:
+    llm = ExtractiveFallbackLLM()
+    response = llm.generate(
+        system_prompt="system",
+        user_prompt=(
+            "Question: What quality of service levels are available?\n\n"
+            "Context:\n"
+            "[1] doc_id=doc-1 chunk_id=c1 source=test\n"
+            "Carriers have an intrinsic collision avoidance system. "
+            "The available quality of service levels are Concorde, First, Business, and Coach."
+        ),
+    )
+
+    assert "Concorde, First, Business, and Coach" in response.content
+
+
+def test_huggingface_inference_llm_uses_hf_defaults(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("HF_TOKEN", "test-token")
+
+    llm = HuggingFaceInferenceLLM(model_name="test-model")
+
+    assert llm.base_url == "https://router.huggingface.co/v1"
+    assert llm.api_key == "test-token"
+    assert llm.model_name == "test-model"

@@ -3,7 +3,13 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from ragforge.generation import ContextBuilder, ExtractiveFallbackLLM, OpenAICompatibleLLM, RAGPipeline
+from ragforge.generation import (
+    ContextBuilder,
+    ExtractiveFallbackLLM,
+    HuggingFaceInferenceLLM,
+    OpenAICompatibleLLM,
+    RAGPipeline,
+)
 from ragforge.retrieval.pipeline import RerankedHybridPipeline
 
 
@@ -23,7 +29,7 @@ def build_parser() -> argparse.ArgumentParser:
         help="Cross-encoder reranker model name.",
     )
     parser.add_argument("--rrf-k", type=int, default=60, help="Reciprocal Rank Fusion constant.")
-    parser.add_argument("--llm-mode", choices=["fallback", "openai"], default="fallback")
+    parser.add_argument("--llm-mode", choices=["fallback", "openai", "huggingface"], default="fallback")
     parser.add_argument("--llm-model", default="gpt-4.1-mini", help="OpenAI-compatible model name.")
     parser.add_argument("--llm-base-url", default=None, help="Optional OpenAI-compatible base URL.")
     return parser
@@ -45,6 +51,11 @@ def main() -> None:
 
     if args.llm_mode == "openai":
         llm = OpenAICompatibleLLM(
+            model_name=args.llm_model,
+            base_url=args.llm_base_url,
+        )
+    elif args.llm_mode == "huggingface":
+        llm = HuggingFaceInferenceLLM(
             model_name=args.llm_model,
             base_url=args.llm_base_url,
         )
