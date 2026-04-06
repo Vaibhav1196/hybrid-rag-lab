@@ -109,7 +109,7 @@ def test_reranked_pipeline_rejects_directories_without_non_empty_documents(tmp_p
     embedder = FakeEmbedder({})
     scorer = FakeScorer({})
 
-    with pytest.raises(ValueError, match="No non-empty text documents found"):
+    with pytest.raises(ValueError, match="No non-empty supported documents found"):
         RerankedHybridPipeline.from_directory(
             tmp_path,
             embedder=embedder,

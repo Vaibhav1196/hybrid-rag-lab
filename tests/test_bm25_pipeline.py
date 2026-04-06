@@ -60,7 +60,7 @@ def test_bm25_pipeline_builds_from_documents() -> None:
 def test_bm25_pipeline_rejects_directories_without_non_empty_documents(tmp_path: Path) -> None:
     write_text_file(tmp_path / "blank.txt", "   ")
 
-    with pytest.raises(ValueError, match="No non-empty text documents found"):
+    with pytest.raises(ValueError, match="No non-empty supported documents found"):
         BM25Pipeline.from_directory(tmp_path)
 
 
