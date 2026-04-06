@@ -162,7 +162,7 @@ hybrid-rag-lab
 │
 ├── data/               # sample documents
 ├── tests/              # unit tests
-├── scripts/            # runnable experiments
+├── scripts/            # runnable entry points grouped by stage
 │
 ├── src/
 │   └── ragforge/
@@ -180,6 +180,14 @@ hybrid-rag-lab
 
 The project uses a **src-based layout** to ensure the package behaves
 correctly when installed.
+
+The `scripts/` directory is grouped by workflow:
+
+- `scripts/ingestion/`
+- `scripts/retrieval/`
+- `scripts/generation/`
+- `scripts/evaluation/`
+- `scripts/docs/`
 
 ------------------------------------------------------------------------
 
