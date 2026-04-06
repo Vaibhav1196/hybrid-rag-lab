@@ -228,6 +228,24 @@ This project uses **uv** for dependency management and environment
 isolation, with a `Makefile` to simplify common development tasks.
 
 You need to have `uv` installed on your system before using the commands
+
+------------------------------------------------------------------------
+
+# Hugging Face Demo Branches
+
+Hugging Face demos are developed on separate branches after features are
+merged into stable `main`.
+
+For demo 1, see:
+
+- `app.py`
+- `requirements.txt`
+- `docs/hf_demo_01.md`
+
+Demo 1 supports both:
+
+- fallback extractive generation without external keys
+- Hugging Face LLM generation when `HF_TOKEN` is configured
 below.
 
 You can also inspect the [Makefile](./Makefile)
