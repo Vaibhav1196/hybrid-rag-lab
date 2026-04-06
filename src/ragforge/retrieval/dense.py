@@ -24,7 +24,6 @@ from ragforge.core.schemas import Chunk, RetrievalResult
 from ragforge.retrieval.embeddings import TextEmbedder
 
 
-
 #----------------------------------------------------------------------------------
 
 # Helper function 1 : _as_2d_float32
